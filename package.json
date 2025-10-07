@@ -1,0 +1,53 @@
+{
+  "name": "fliplet-event-single",
+  "version": "1.0.0",
+  "description": "Fliplet Event App - Comprehensive Test Suite",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:all": "playwright test",
+    "test:journeys": "playwright test tests/journeys/",
+    "test:journeys:auth": "playwright test tests/journeys/auth-journeys/",
+    "test:journeys:attendee": "playwright test tests/journeys/attendee-journeys/",
+    "test:journeys:admin": "playwright test tests/journeys/admin-journeys/",
+    "test:journeys:integration": "playwright test tests/journeys/integration-journeys/",
+    "test:user": "playwright test tests/user/",
+    "test:admin": "playwright test tests/admin/",
+    "test:auth": "playwright test tests/auth/",
+    "test:api": "playwright test tests/api/",
+    "test:rbac": "playwright test tests/rbac/",
+    "test:accessibility": "playwright test tests/accessibility/",
+    "test:performance": "playwright test tests/performance/",
+    "test:e2e": "playwright test tests/journeys/",
+    "test:features": "playwright test tests/user/ tests/admin/",
+    "test:smoke": "playwright test --grep @P0",
+    "test:regression": "playwright test tests/journeys/ tests/user/ tests/admin/",
+    "test:parallel": "playwright test --workers=4",
+    "test:ci": "playwright test --reporter=line --workers=4",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "test:install": "playwright install",
+    "test:codegen": "playwright codegen",
+    "test:trace": "playwright show-trace"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "automation",
+    "fliplet",
+    "event-app"
+  ],
+  "author": "QA Team",
+  "license": "ISC",
+  "dependencies": {
+    "@browserbasehq/stagehand": "^2.5.0",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.0.3",
+    "typescript": "^5.8.3"
+  }
+}

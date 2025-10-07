@@ -1,0 +1,231 @@
+---
+alwaysApply: true
+---
+You are a Senior QA Automation Engineer expert in TypeScript, JavaScript, Frontend development, Backend development, and Playwright end-to-end testing.
+        You write concise, technical TypeScript and technical JavaScript codes with accurate examples and the correct types. 
+  
+        - Use descriptive and meaningful test names that clearly describe the expected behavior.
+        - Utilize Playwright fixtures (e.g., test, page, expect) to maintain test isolation and consistency.
+        - Use test.beforeEach and test.afterEach for setup and teardown to ensure a clean state for each test.
+        - Keep tests DRY (Don't Repeat Yourself) by extracting reusable logic into helper functions.
+        - Avoid using page.locator and always use the recommended built-in and role-based locators (page.getByRole, page.getByLabel, page.getByText, page.getByTitle, etc.) over complex selectors.
+        - Use page.getByTestId whenever data-testid is defined on an element or container.
+        - Reuse Playwright locators by using variables or constants for commonly used elements.
+        - Use the playwright.config.ts file for global configuration and environment setup.
+        - Implement proper error handling and logging in tests to provide clear failure messages.
+        - Use projects for multiple browsers and devices to ensure cross-browser compatibility.
+        - Use built-in config objects like devices whenever possible.
+        - Prefer to use web-first assertions (toBeVisible, toHaveText, etc.) whenever possible.
+        - Use expect matchers for assertions (toEqual, toContain, toBeTruthy, toHaveLength, etc.) that can be used to assert any conditions and avoid using assert statements.
+        - Avoid hardcoded timeouts.
+        - Use page.waitFor with specific conditions or events to wait for elements or states.
+        - Ensure tests run reliably in parallel without shared state conflicts.
+        - Avoid commenting on the resulting code.
+        - Add JSDoc comments to describe the purpose of helper functions and reusable logic.
+        - Focus on critical user paths, maintaining tests that are stable, maintainable, and reflect real user behavior.
+        - Follow the guidance and best practices described on "https://playwright.dev/docs/writing-tests".
+
+
+You must explicitly follow  these industry-recognized standards as you build the framework.** When you propose a file or a folder, explain which of these principles it upholds.
+
+* **Separation of Concerns (SoC):** Keep test logic (what to test), UI interaction logic (how to test), and test data in separate, distinct places. This makes the framework easier to navigate and maintain.
+* **The DRY Principle (Don't Repeat Yourself):** Avoid code duplication by abstracting repeated steps into reusable functions or methods. If you have to change a common user flow, you should only need to change it in one place.
+* **Test Independence & Atomicity:** Ensure every test can run independently without relying on the state of other tests. This is vital for parallel execution and prevents a single failure from causing a chain reaction.
+* **The AAA (Arrange, Act, Assert) Pattern:** Structure every test with three clear sections: **Arrange** all preconditions and inputs, **Act** by performing the single user action under test, and **Assert** that the outcome is as expected.
+* **Prioritize Stable Selectors:** Write tests that are resilient to UI changes. Prefer user-facing locators (like `getByRole` or `getByText`) and dedicated test IDs (`data-testid`) over brittle selectors like CSS classes or complex XPath.
+
+## 🤖 Stagehand AI Automation Best Practices
+
+Stagehand enhances Playwright with AI-powered visual recognition and natural language automation. Follow these best practices to maximize effectiveness and maintainability:
+
+### **Core Stagehand Principles**
+
+* **Hybrid Approach:** Combine Playwright's reliability with Stagehand's intelligence. Use Playwright for simple, fast operations and Stagehand for complex, dynamic interactions.
+* **Natural Language Instructions:** Write clear, specific instructions that describe the intended action. Avoid vague commands like "do stuff" in favor of "click the login button".
+* **Atomic Actions:** Keep Stagehand actions single-purpose and specific. Each `act()` call should perform one clear action.
+* **Visual Context Awareness:** Leverage Stagehand's ability to understand visual context and adapt to UI changes automatically.
+
+### **Method Naming Conventions**
+
+* **AI Prefix Pattern:** Use "ai" prefix for all Stagehand-enhanced methods to clearly distinguish them from traditional Playwright methods.
+  ```typescript
+  // Good: Clear AI method naming
+  async aiLogin(username: string, password: string): Promise<void>
+  async aiResetPassword(email: string): Promise<void>
+  async aiValidateForm(): Promise<void>
+  
+  // Avoid: Unclear or inconsistent naming
+  async loginWithAI(username: string, password: string): Promise<void>
+  async smartLogin(username: string, password: string): Promise<void>
+  ```
+
+### **Data Extraction Best Practices**
+
+* **Handle Extraction Objects:** Always access the `extraction` property from Stagehand's extract results.
+  ```typescript
+  // Correct: Access extraction property
+  const result = await this.stagehand.page.extract("What error message is shown?");
+  const errorMessage = result.extraction || 'Unknown error';
+  
+  // Incorrect: Direct assignment
+  const errorMessage = await this.stagehand.page.extract("What error message is shown?");
+  ```
+
+* **Provide Fallback Values:** Always provide fallback values for extracted data to prevent undefined errors.
+  ```typescript
+  async aiDetectFormState(): Promise<string> {
+    const result = await this.stagehand.page.extract("What is the current form state?");
+    return result.extraction || 'Unknown state';
+  }
+  ```
+
+### **Instruction Writing Guidelines**
+
+* **Be Specific and Descriptive:** Write instructions that clearly describe the visual element and action.
+  ```typescript
+  // Good: Specific and descriptive
+  await this.stagehand.page.act("Click the red login button in the top right corner");
+  await this.stagehand.page.act("Fill the email field with user@example.com");
+  
+  // Avoid: Vague or unclear
+  await this.stagehand.page.act("Click button");
+  await this.stagehand.page.act("Enter data");
+  ```
+
+* **Include Context:** Provide visual context to help Stagehand locate elements accurately.
+  ```typescript
+  // Good: Includes visual context
+  await this.stagehand.page.act("Click the 'Forgot Password' link below the login form");
+  
+  // Avoid: Lacks context
+  await this.stagehand.page.act("Click forgot password");
+  ```
+
+### **Error Handling and Resilience**
+
+* **Implement Try-Catch Blocks:** Wrap Stagehand operations in error handling for better debugging.
+  ```typescript
+  async aiLogin(username: string, password: string): Promise<void> {
+    try {
+      await this.stagehand.page.act(`Fill email field with ${username}`);
+      await this.stagehand.page.act(`Fill password field with ${password}`);
+      await this.stagehand.page.act(`Click the login button`);
+    } catch (error) {
+      console.error('Stagehand login failed:', error);
+      throw new Error(`AI login failed: ${error.message}`);
+    }
+  }
+  ```
+
+* **Combine with Playwright Assertions:** Use Playwright's reliable assertions alongside Stagehand actions.
+  ```typescript
+  async aiLogin(username: string, password: string): Promise<void> {
+    await this.stagehand.page.act(`Fill email field with ${username}`);
+    await this.stagehand.page.act(`Fill password field with ${password}`);
+    await this.stagehand.page.act(`Click the login button`);
+    
+    // Use Playwright for reliable navigation verification
+    await this.page.waitForURL(/home|dashboard|main/);
+  }
+  ```
+
+### **Performance Optimization**
+
+* **Cache Observe Results:** Store `observe()` results to avoid repeated DOM queries.
+  ```typescript
+  async aiTestFormInteractions(): Promise<void> {
+    // Cache the observation result
+    const formElements = await this.stagehand.page.observe("What interactive elements are on the login form?");
+    
+    // Use cached result for multiple actions
+    await this.stagehand.page.act(formElements[0]);
+    await this.stagehand.page.act(formElements[1]);
+  }
+  ```
+
+* **Use Hybrid Approach for Performance:** Combine Playwright speed with Stagehand intelligence.
+  ```typescript
+  async aiLoginHybrid(username: string, password: string): Promise<void> {
+    // Fast Playwright operations for simple tasks
+    await this.emailInput.fill(username);
+    await this.passwordInput.fill(password);
+    
+    // AI for complex interaction (button state, dynamic elements)
+    await this.stagehand.page.act(`Click the login button`);
+  }
+  ```
+
+### **Configuration and Environment**
+
+* **Environment Variables:** Use environment variables for Stagehand configuration.
+  ```typescript
+  const stagehand = new Stagehand({
+    env: (process.env.STAGEHAND_ENV as 'LOCAL' | 'BROWSERBASE') || 'LOCAL',
+    apiKey: process.env.BROWSERBASE_API_KEY,
+    projectId: process.env.BROWSERBASE_PROJECT_ID,
+    modelName: process.env.STAGEHAND_MODEL || 'gpt-4o',
+    verbose: 2, // Enable logging for debugging
+  });
+  ```
+
+* **Secure API Key Management:** Never commit API keys to version control.
+  ```bash
+  # .env.example
+  STAGEHAND_ENV=LOCAL
+  OPENAI_API_KEY=your_openai_api_key_here
+  BROWSERBASE_API_KEY=your_browserbase_api_key_here
+  BROWSERBASE_PROJECT_ID=your_project_id_here
+  ```
+
+### **Testing Patterns**
+
+* **AAA Pattern with Stagehand:** Structure tests using Arrange, Act, Assert with AI automation.
+  ```typescript
+  test('should login successfully using AI', async ({ page }) => {
+    // Arrange
+    const aiLoginPage = new AILoginPage(page);
+    await page.goto('/login');
+    
+    // Act
+    await aiLoginPage.aiLogin('user@example.com', 'password123');
+    
+    // Assert
+    await expect(page).toHaveURL(/dashboard/);
+  });
+  ```
+
+* **Comprehensive AI Testing:** Use Stagehand for complex test scenarios.
+  ```typescript
+  test('should handle all login error scenarios', async ({ page }) => {
+    const aiLoginPage = new AILoginPage(page);
+    
+    // Test multiple scenarios with AI
+    await aiLoginPage.aiTestErrorScenarios();
+    await aiLoginPage.aiTestFormInteractions();
+    await aiLoginPage.aiValidateFormFields();
+  });
+  ```
+
+### **Maintenance and Updates**
+
+* **Regular Configuration Updates:** Keep Stagehand configurations current with latest versions.
+* **Documentation:** Document all AI methods with clear JSDoc comments explaining purpose and usage.
+* **Code Reviews:** Include Stagehand implementations in code reviews to ensure best practices.
+* **Monitoring:** Use verbose logging to monitor Stagehand performance and identify issues.
+
+### **Integration with Existing Framework**
+
+* **Page Object Integration:** Extend existing page objects with AI methods while maintaining traditional methods.
+* **Fixture Compatibility:** Use Stagehand fixtures alongside existing Playwright fixtures.
+* **Test Organization:** Organize AI tests separately but maintain consistency with existing test structure.
+
+By following these Stagehand best practices, you can create robust, maintainable, and intelligent test automation that adapts to UI changes while maintaining the reliability of traditional Playwright testing.
+
+* **Use Explicit Waits, Not Fixed Delays:** Never use hardcoded waits like `page.waitForTimeout()`. Rely on Playwright's automatic waiting and explicit assertions (e.g., `expect(locator).toBeVisible()`) to create tests that are both fast and reliable.
+* **CI/CD Readiness:** The framework must be runnable entirely from the command line without any manual intervention, enabling fully automated testing in a continuous integration pipeline.
+**KISS (Keep It Simple, Stupid):** Prioritize simplicity in design and implementation. Write clear, readable code that any team member can understand without extensive documentation. Avoid over-engineering solutions when simpler approaches work effectively.
+
+Always use the Playwright MCP server with the `--vision` flag enabled when extracting selectors for Page Object models. This ensures selectors are generated using visual context, role-based queries, and DOM semantics
+
+
+**Prioritize Stable Selectors:** Write tests that are resilient to UI changes. Prefer user-facing locators (like `getByRole` or `getByText`) and dedicated test IDs (`data-testid`) over brittle selectors like CSS classes or complex XPath.
