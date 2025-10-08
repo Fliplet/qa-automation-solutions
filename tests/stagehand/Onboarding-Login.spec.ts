@@ -15,7 +15,7 @@ let aiLogin: AILoginPage;
 test.describe('AI Onboarding + Login Flow (Single Browser)', () => {
 
   test.beforeEach(async () => {
-    // 1️⃣ Initialize Stagehand (creates its own Playwright browser + page)
+    // 1️Initialize Stagehand (creates its own Playwright browser + page)
     stagehand = new Stagehand({
       env: 'LOCAL',
       verbose: 2
@@ -24,21 +24,21 @@ test.describe('AI Onboarding + Login Flow (Single Browser)', () => {
 
     const page = stagehand.page; // Stagehand’s Playwright page
 
-    // 2️⃣ Initialize AI page objects
+    // 2️Initialize AI page objects
     aiOnboarding = new AIOboardingPage(page, stagehand);
     aiLogin = new AILoginPage(page, stagehand);
 
-    // 3️⃣ Complete onboarding
+    // 3️Complete onboarding
     await page.goto(`${BASE_URL}/onboarding`);
     await aiOnboarding.aiCompleteOnboarding(stagehand);
 
-    // 4️⃣ Verify redirection to login using direct Playwright call
+    // 4️Verify redirection to login using direct Playwright call
     const currentUrl = await stagehand.page.url();
     expect(currentUrl).toMatch(/login|signin/);
   });
 
   test.afterEach(async () => {
-    // 5️⃣ Close Stagehand browser cleanly
+    // 5️Close Stagehand browser cleanly
     await stagehand.close();
   });
 
