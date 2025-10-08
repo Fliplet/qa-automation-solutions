@@ -28,12 +28,19 @@ test.describe('AI Onboarding + Login Flow (Single Browser)', () => {
     aiOnboarding = new AIOboardingPage(page, stagehand);
     aiLogin = new AILoginPage(page, stagehand);
 
-    // 3️Complete onboarding
+    // 3️Navigate to onboarding and complete it
+    
     await page.goto(`${BASE_URL}/onboarding`);
+    
+    // Wait for page to load
+    await page.waitForLoadState('networkidle');
+    
+    console.log('Starting onboarding completion...');
     await aiOnboarding.aiCompleteOnboarding(stagehand);
 
     // 4️Verify redirection to login using direct Playwright call
     const currentUrl = await stagehand.page.url();
+    console.log('Current URL after onboarding:', currentUrl);
     expect(currentUrl).toMatch(/login|signin/);
   });
 

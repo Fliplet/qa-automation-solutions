@@ -9,36 +9,21 @@ export class AIOboardingPage extends BasePage {
   }
   
   async aiCompleteOnboarding(stagehand: Stagehand): Promise<void> {
-    // Slide 1 → Click "Explore More"
-    let observed = await stagehand.page.observe('List all visible buttons or clickable elements');
-    if (/Explore\s*More/i.test(JSON.stringify(observed))) {
-      await stagehand.page.act('Click the "Explore More" button');
-      await this.page.waitForTimeout(1000); // allow slide animation
-    }
-  
-    // Slide 2 → Click "Continue"
-    observed = await stagehand.page.observe('List all visible buttons or clickable elements');
-    if (/Continue/i.test(JSON.stringify(observed))) {
-      await stagehand.page.act('Click the "Continue" button');
-      await this.page.waitForTimeout(1000);
-    }
-  
-    // Slide 3 → Click "Continue"
-    observed = await stagehand.page.observe('List all visible buttons or clickable elements');
-    if (/Continue/i.test(JSON.stringify(observed))) {
-      await stagehand.page.act('Click the "Continue" button');
-      await this.page.waitForTimeout(1000);
-    }
-  
-    // Slide 4 → Click "Let’s get started"
-    observed = await stagehand.page.observe('List all visible buttons or clickable elements');
-    if (/Let('|’)?s\s*get\s*started/i.test(JSON.stringify(observed))) {
-      await stagehand.page.act('Click the "Let’s get started" button');
-      await this.page.waitForTimeout(1500);
-    }
-  
-    // Wait for login form or next page
-    await this.page.waitForLoadState('networkidle');
+    // Step 1: Click "Explore More" on first slide
+    await stagehand.page.act('Click the "Explore More" button');
+    await this.page.waitForTimeout(1000);
+
+    // Step 2: Click "Continue" on second slide  
+    await stagehand.page.act('Click the "Continue" button');
+    await this.page.waitForTimeout(1000);
+
+    // Step 3: Click "Continue" on third slide
+    await stagehand.page.act('Click the "Continue" button once again');
+    await this.page.waitForTimeout(1000);
+
+    // Step 4: Click "Let's get started" on final slide
+    await stagehand.page.act('Click the "Let\'s get started" button');
+    await this.page.waitForTimeout(1500);
   }
   
 

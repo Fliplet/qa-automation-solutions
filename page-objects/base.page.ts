@@ -8,9 +8,9 @@ import { Stagehand } from '@browserbasehq/stagehand';
  */
 export abstract class BasePage {
   public  page: Page;
-  protected stagehand: Stagehand;
+  protected stagehand?: Stagehand;
 
-  constructor(page: Page, stagehand: Stagehand) {
+  constructor(page: Page, stagehand?: Stagehand) {
     this.page = page;
     this.stagehand = stagehand;
   }

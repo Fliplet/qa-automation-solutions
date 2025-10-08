@@ -14,7 +14,7 @@ export class OnboardingPage extends BasePage {
   public readonly slide6ContinueButton: Locator;
   public readonly getStartedButton: Locator;
 
-  constructor(page: Page, stagehand: Stagehand) {
+  constructor(page: Page, stagehand?: Stagehand) {
     super(page, stagehand);
 
     this.exploreMoreButton = page.getByRole('button', { name: 'Explore More' });
