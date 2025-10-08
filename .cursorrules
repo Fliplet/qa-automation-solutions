@@ -1,401 +1,248 @@
-# =============================
-# GLOBAL CONTEXT AND ROLE
-# =============================
+# Stagehand Project
 
-You are a SENIOR QA AUTOMATION ENGINEER with deep expertise in:
-- TypeScript
-- JavaScript
-- Frontend & Backend development
-- Playwright end-to-end testing
-- Stagehand AI-powered browser automation
+This is a project that uses [Stagehand](https://github.com/browserbase/stagehand), which amplifies Playwright with AI-powered `act`, `extract`, and `observe` methods added to the Page class.
 
-You MUST always produce concise, maintainable, idiomatic Playwright code that:
-- Upholds Separation of Concerns (SoC), DRY, and AAA
-- Uses stable, role-based selectors
-- Is CI/CD ready and resilient to flaky behavior
-- Documents reusable helpers with JSDoc
-- Leverages Stagehand AI capabilities for enhanced automation
+`Stagehand` is a class that provides configuration and browser automation capabilities with:
+- `stagehand.page`: A StagehandPage object (extends Playwright Page)
+- `stagehand.context`: A StagehandContext object (extends Playwright BrowserContext)
+- `stagehand.agent()`: Create AI-powered agents for autonomous multi-step workflows
+- `stagehand.init()`: Initialize the browser session
+- `stagehand.close()`: Clean up resources
 
-# =============================
-# CORE PRINCIPLES TO FOLLOW
-# =============================
+`Page` extends Playwright's Page class with AI-powered methods:
+- `act()`: Perform actions on web elements using natural language
+- `extract()`: Extract structured data from pages using schemas
+- `observe()`: Plan actions and get selectors before executing
 
-ALWAYS:
-- USE descriptive test names that clearly define expected behavior
-- STRUCTURE tests using the AAA pattern (Arrange, Act, Assert)
-- UTILIZE fixtures (`test`, `page`, `expect`) for isolation and consistency
-- USE `test.beforeEach` / `test.afterEach` for setup and teardown
-- EXTRACT reusable logic into helpers under `/helpers`
-- CREATE Page Objects for UI interactions under `/pages`
-- USE test data from `/fixtures` for consistency and maintainability
-- DEFINE projects in `playwright.config.ts` for browser/device coverage
-- PREFER Playwright's auto-waiting and `expect` assertions
-- USE JSDoc for helper functions to document purpose, inputs, outputs
-- RELY on the Playwright MCP server with `--vision` for robust selectors
-- LEVERAGE Stagehand AI methods (`act`, `extract`, `observe`) for complex interactions
-- USE hybrid approach: Playwright for reliable actions, Stagehand for visual recognition
-- CACHE `observe` results to avoid unexpected DOM changes
-- USE atomic, specific actions with Stagehand (`page.act("Click login button")`)
+`Agent` provides autonomous Computer Use Agent capabilities:
+- `execute()`: Perform complex multi-step tasks using natural language instructions
 
-NEVER:
-- DUPLICATE flows (login, navigation, checkout)
-- USE brittle locators (CSS, XPath, `page.locator`)
-- USE `waitForTimeout` or hardcoded delays
-- COMMENT inside test bodies (logic must be self-explanatory)
-- RELY on global state between tests
-- USE multi-step Stagehand actions (keep them atomic)
-- USE vague Stagehand instructions ("do stuff" vs "click login button")
-- FORGET to initialize Stagehand before using AI methods
+`Context` extends Playwright's BrowserContext class for browser session management.
 
-# =============================
-# FILE STRUCTURE CONVENTION
-# =============================
+Use the following rules to write code for this project.
 
-tests/
-  ├── e2e/
-  │     ├── login.spec.ts          # End-to-end test specs
-  │     ├── checkout.spec.ts
-  │
-  ├── stagehand/
-  │     ├── stagehand-integration.spec.ts  # AI-powered automation tests
-  │
-  ├── helpers/
-  │     ├── auth.ts                # Login, logout, user session helpers
-  │     ├── navigation.ts          # Page navigation utilities
-  │     ├── api.ts                 # API mocking/stubbing utilities
-  │     ├── stagehand.ts           # Stagehand-specific helpers
-  │
-  ├── fixtures/
-  │     ├── test-data.ts           # Test constants and mock data
-  │     ├── stagehand.fixture.ts   # Stagehand fixture for tests
-  │
-  ├── pages/
-  │     ├── LoginPage.ts           # Page Object Model for Login
-  │     ├── CheckoutPage.ts        # Page Object Model for Checkout
-  │     ├── base.page.ts           # Base page with Stagehand integration
-  │
-  └── playwright.config.ts         # Global configuration
+- To plan an instruction like "click the sign in button", use Stagehand `observe` to get the action to execute.
 
-# =============================
-# HELPER UTILITIES
-# =============================
-
-## auth.ts
 ```typescript
-import { Page } from '@playwright/test';
-
-/**
- * Logs in a user using stable role-based selectors.
- * @param page - Playwright Page instance
- * @param username - Username credential
- * @param password - Password credential
- */
-export async function login(page: Page, username: string, password: string): Promise<void> {
-  await page.goto('/');
-  await page.getByLabel('Username').fill(username);
-  await page.getByLabel('Password').fill(password);
-  await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('heading', { name: 'Welcome back!' }).waitFor();
-}
-
-/**
- * Logs out the current user.
- * @param page - Playwright Page instance
- */
-export async function logout(page: Page): Promise<void> {
-  await page.getByRole('button', { name: 'Logout' }).click();
-  await page.getByRole('heading', { name: 'You are logged out' }).waitFor();
-}
+const results = await page.observe("Click the sign in button");
 ```
 
-## navigation.ts
-```typescript
-
-import { Page } from '@playwright/test';
-
-/**
- * Navigates to a given section of the app by role-based link.
- * @param page - Playwright Page instance
- * @param sectionName - Visible name of the navigation link
- */
-export async function navigateTo(page: Page, sectionName: string): Promise<void> {
-  await page.getByRole('link', { name: sectionName }).click();
-  await page.getByRole('heading', { name: sectionName }).waitFor();
-}
-```
-
-## api.ts
-```typescript
-
-import { Page } from '@playwright/test';
-
-/**
- * Intercepts an API request and mocks its response.
- * Useful for simulating backend conditions in isolated tests.
- * @param page - Playwright Page instance
- * @param endpoint - API endpoint to intercept
- * @param mockResponse - JSON object to return as mock
- */
-export async function mockApiResponse(page: Page, endpoint: string, mockResponse: object): Promise<void> {
-  await page.route(endpoint, async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(mockResponse),
-    });
-  });
-}
-```
-
-# =============================
-# DEFAULT PLAYWRIGHT CONFIG
-# =============================
+You can also pass in the following params:
 
 ```typescript
-import { defineConfig, devices } from '@playwright/test';
-
-export default defineConfig({
-  testDir: './tests/e2e',
-  timeout: 30 * 1000, // 30s max per test
-  expect: {
-    timeout: 5000, // 5s for assertions
-  },
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : undefined,
-  reporter: [['html', { open: 'never' }], ['list'], ['json', { outputFile: 'test-results.json' }]],
-  use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-    headless: true,
-    viewport: { width: 1280, height: 720 },
-    actionTimeout: 10000,
-  },
-
-  projects: [
-    {
-      name: 'Chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'Firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'WebKit',
-      use: { ...devices['Desktop Safari'] },
-    },
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
-  ],
-
-  outputDir: 'test-results/',
+await page.observe({
+  instruction: "the instruction to execute",
+  returnAction: true 
 });
 ```
 
-# =============================
-# EXAMPLES USING HELPERS
-# =============================
+- The result of `observe` is an array of `ObserveResult` objects that can directly be used as params for `act` like this:
+  ```typescript
+  const results = await page.observe({
+    instruction: "the instruction to execute",
+    returnAction: true, // return the action to execute
+  });
 
-## GOOD: USING HELPERS + POM
+  await page.act(results[0]);
+  ```
+  
+- When writing code that needs to extract data from the page, use Stagehand `extract`. Explicitly pass the following params by default:
+
 ```typescript
-import { test, expect } from '@playwright/test';
-import { login, logout } from '../helpers/auth';
-import { navigateTo } from '../helpers/navigation';
-
-test.describe('Dashboard navigation', () => {
-  test.beforeEach(async ({ page }) => {
-    await login(page, 'user1', 'securePass!');
-  });
-
-  test.afterEach(async ({ page }) => {
-    await logout(page);
-  });
-
-  test('should allow user to navigate to Reports section', async ({ page }) => {
-    // Act
-    await navigateTo(page, 'Reports');
-
-    // Assert
-    await expect(page.getByRole('heading', { name: 'Reports' })).toBeVisible();
-  });
+const { someValue } = await page.extract({
+  instruction: "the instruction to execute",
+  schema: z.object({
+    someValue: z.string(),
+  }), // The schema to extract
 });
 ```
 
-## BAD: DUPLICATED FLOWS
+## Initialize
+
 ```typescript
-test('navigates to reports', async ({ page }) => {
-  await page.goto('/');
-  await page.getByLabel('Username').fill('user1');
-  await page.getByLabel('Password').fill('securePass!');
-  await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('link', { name: 'Reports' }).click();
-  expect(await page.getByRole('heading', { name: 'Reports' }).isVisible()).toBeTruthy();
-});
-```
-
-# =============================
-# PLAYWRIGHT MCP SERVER RULE
-# =============================
-
-WHEN generating selectors for Page Object Models, ALWAYS USE the Playwright MCP server with --vision enabled.
-This ensures:
-
-- Role-based locators
-- data-testid selectors where applicable
-- Semantic, resilient queries
-- Minimal breakage from UI updates
-
-# =============================
-# STAGEHAND AI AUTOMATION RULES
-# =============================
-
-This project uses [Stagehand](https://github.com/browserbase/stagehand), which amplifies Playwright with AI-powered `act`, `extract`, and `observe` methods.
-
-## Stagehand Configuration
-```typescript
-import { Stagehand } from "@browserbasehq/stagehand";
+import { Stagehand, Page, BrowserContext } from "@browserbasehq/stagehand";
 
 const stagehand = new Stagehand({
-  env: process.env.STAGEHAND_ENV as 'LOCAL' | 'BROWSERBASE' || 'LOCAL',
-  apiKey: process.env.BROWSERBASE_API_KEY,
-  projectId: process.env.BROWSERBASE_PROJECT_ID,
-  domSettleTimeoutMs: 30_000,
-  enableCaching: true,
-  modelName: process.env.STAGEHAND_MODEL || 'gpt-4o',
-  modelClientOptions: {
-    apiKey: process.env.OPENAI_API_KEY,
-  },
-  verbose: 2,
+  env: "BROWSERBASE"
 });
+
+await stagehand.init();
+
+const page = stagehand.page; // Playwright Page with act, extract, and observe methods
+
+const context = stagehand.context; // Playwright BrowserContext
+```
+### Configuration Options
+```typescript
+const StagehandConfig = {
+  env: "BROWSERBASE" | "LOCAL", // Environment to run in
+  apiKey: process.env.BROWSERBASE_API_KEY, // Browserbase API key
+  projectId: process.env.BROWSERBASE_PROJECT_ID, // Browserbase project ID
+  debugDom: true, // Enable DOM debugging features
+  headless: false, // Run browser in headless mode
+  domSettleTimeoutMs: 30_000, // Timeout for DOM to settle
+  enableCaching: true, // Enable action caching
+  modelName: "gpt-4o", // AI model to use
+  modelClientOptions: {
+    apiKey: process.env.OPENAI_API_KEY, // OpenAI API key
+  },
+};
+```
+## Act
+
+You can act directly with string instructions:
+
+```typescript
+await page.act("Click the sign in button");
 ```
 
-## Stagehand Methods
+Use variables for dynamic form filling:
 
-### Act - Perform Actions
 ```typescript
-// Direct string instructions (preferred)
-await page.act("Click the login button");
-await page.act("Fill email field with user@example.com");
-
-// With variables for dynamic data
 await page.act({
   action: `Enter the following information:
     Name: %name%
-    Email: %email%`,
+    Email: %email%
+    Phone: %phone%`,
   variables: {
     name: "John Doe",
-    email: "john@example.com"
+    email: "john@example.com", 
+    phone: "+1-555-0123"
   }
 });
 ```
 
-### Observe - Plan Actions
-```typescript
-// Plan before acting (recommended pattern)
-const results = await page.observe("Click the sign in button");
-await page.act(results[0]);
+**Best Practices:**
+- Cache the results of `observe` to avoid unexpected DOM changes
+- Keep actions atomic and specific (e.g., "Click the sign in button" not "Sign in to the website")
+- Use variable substitution for dynamic data entry
 
-// With returnAction option
-const results = await page.observe({
-  instruction: "Click the login button",
-  returnAction: true
-});
-await page.act(results[0]);
+Act `action` should be as atomic and specific as possible, i.e. "Click the sign in button" or "Type 'hello' into the search input".
+AVOID actions that are more than one step, i.e. "Order me pizza" or "Send an email to Paul asking him to call me".
+
+## Extract
+
+### Simple String Extraction
+
+```typescript
+const signInButtonText = await page.extract("extract the sign in button text");
 ```
 
-### Extract - Get Data
-```typescript
-// Simple extraction
-const buttonText = await page.extract("extract the login button text");
+### Structured Extraction with Schema (Recommended)
 
-// Structured extraction with schema
-const { userInfo } = await page.extract({
-  instruction: "Extract user information from profile",
+Always use Zod schemas for structured data extraction:
+
+```typescript
+import { z } from "zod";
+
+const data = await page.extract({
+  instruction: "extract the sign in button text",
   schema: z.object({
-    userInfo: z.object({
-      name: z.string(),
-      email: z.string(),
-      role: z.string()
-    })
+    text: z.string(),
+  }),
+});
+```
+
+### Array Extraction
+
+To extract multiple items, wrap the array in a single object:
+
+```typescript
+const data = await page.extract({
+  instruction: "extract the text inside all buttons",
+  schema: z.object({
+    buttons: z.array(z.string()),
   })
 });
 ```
 
-## Hybrid Approach (Recommended)
+### Complex Object Extraction
+
+For more complex data structures:
+
 ```typescript
-// Use Playwright for reliable actions
-await loginPage.emailInput.fill(ADMIN_EMAIL);
-await loginPage.passwordInput.fill(ADMIN_PASSWORD);
-
-// Use Stagehand for complex interactions
-await stagehand.page.act("Click the login button");
-
-// Use Playwright for validation
-await expect(page).toHaveURL(/home|dashboard/);
-```
-
-## Page Object Integration
-```typescript
-// BasePage already includes Stagehand
-export class LoginPage extends BasePage {
-  // Traditional Playwright methods
-  async login(username: string, password: string): Promise<void> {
-    await this.emailInput.fill(username);
-    await this.passwordInput.fill(password);
-    await this.loginButton.click();
-  }
-
-  // Stagehand-enhanced methods
-  async loginWithStagehand(username: string, password: string): Promise<void> {
-    await this.stagehand.page.act(`Fill email field with ${username}`);
-    await this.stagehand.page.act(`Fill password field with ${password}`);
-    await this.stagehand.page.act(`Click login button`);
-  }
-
-  // Hybrid approach
-  async loginHybrid(username: string, password: string): Promise<void> {
-    await this.emailInput.fill(username);
-    await this.passwordInput.fill(password);
-    await this.stagehand.page.act(`Click the login button`);
-  }
-}
-```
-
-## Test Patterns
-```typescript
-// Using Stagehand fixture
-import { test, expect } from '../fixtures/stagehand.fixture';
-
-test('Login with Stagehand', async ({ page, stagehand }) => {
-  await stagehand.page.act("Navigate to login page");
-  await stagehand.page.act("Fill email with admin@example.com");
-  await stagehand.page.act("Fill password with password123");
-  await stagehand.page.act("Click login button");
-  await expect(page).toHaveURL(/home/);
-});
-
-// Using page object with Stagehand
-test('Login with page object', async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  await loginPage.loginWithStagehand(ADMIN_EMAIL, ADMIN_PASSWORD);
-  await expect(page).toHaveURL(/home/);
+const productData = await page.extract({
+  instruction: "extract product information from this page",
+  schema: z.object({
+    title: z.string(),
+    price: z.number(),
+    description: z.string(),
+    features: z.array(z.string()),
+    availability: z.boolean(),
+  }),
 });
 ```
 
-## Best Practices
-- **Atomic Actions**: Keep Stagehand actions specific and single-purpose
-- **Cache Observe**: Store `observe` results to avoid DOM changes
-- **Hybrid Approach**: Combine Playwright reliability with Stagehand intelligence
-- **Error Handling**: Use try/catch for Stagehand operations
-- **Environment Variables**: Configure via `.env` for different environments
-- **Logging**: Enable verbose logging for debugging Stagehand operations
+### Schema Validation
+
+```typescript
+import { validateZodSchema } from "./utils.js";
+import { z } from "zod";
+
+const schema = z.object({ name: z.string() });
+const isValid = validateZodSchema(schema, { name: "John" }); // true
+```
+
+## Agent System
+
+Stagehand provides an Agent System for autonomous web browsing using Computer Use Agents (CUA). Agents execute multi-step workflows using natural language instructions.
+
+### Creating Agents
+
+```typescript
+// Basic agent (default)
+const agent = stagehand.agent();
+
+// OpenAI agent
+const agent = stagehand.agent({
+  provider: "openai",
+  model: "computer-use-preview",
+  instructions: "You are a helpful assistant that can use a web browser.",
+  options: { 
+    apiKey: process.env.OPENAI_API_KEY 
+  }
+});
+
+// Anthropic agent
+const agent = stagehand.agent({
+  provider: "anthropic", 
+  model: "claude-sonnet-4-20250514",
+  instructions: "You are a helpful assistant that can use a web browser.",
+  options: { 
+    apiKey: process.env.ANTHROPIC_API_KEY 
+  }
+});
+```
+### Agent Execution
+```typescript
+// Simple task
+const result = await agent.execute("Extract the title from this webpage");
+
+// Complex multi-step task
+const result = await agent.execute({
+  instruction: "Apply for the first engineer position with mock data",
+  maxSteps: 20,
+  autoScreenshot: true
+});
+```
+
+### Best Practices
+- Be specific with instructions: `"Fill out the contact form with name 'John Doe' and submit it"`
+- Break down complex tasks into smaller steps
+- Use error handling with try/catch blocks
+- Combine agents for navigation with traditional methods for precise data extraction
+
+```typescript
+// Good: Specific instructions
+await agent.execute("Navigate to products page and filter by 'Electronics'");
+
+// Avoid: Vague instructions  
+await agent.execute("Do some stuff on this page");
+```
+
+## Project Structure Best Practices
+
+- Store configurations in `stagehand.config.ts`
+- Use environment variables for API keys (see `.env.example`)
+- Implement main automation logic in functions that accept `{ page, context, stagehand }`
+- Use TypeScript with proper imports from `@browserbasehq/stagehand`

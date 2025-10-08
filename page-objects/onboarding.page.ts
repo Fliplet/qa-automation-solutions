@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './base.page';
+import { Stagehand } from '@browserbasehq/stagehand';
 import { BASE_URL } from '../test-data/app.data';
 
 /**
@@ -13,8 +14,8 @@ export class OnboardingPage extends BasePage {
   public readonly slide6ContinueButton: Locator;
   public readonly getStartedButton: Locator;
 
-  constructor(page: Page) {
-    super(page);
+  constructor(page: Page, stagehand: Stagehand) {
+    super(page, stagehand);
 
     this.exploreMoreButton = page.getByRole('button', { name: 'Explore More' });
     this.slide4ContinueButton = page.getByLabel('Slide 4', { exact: true }).getByText('Continue');
