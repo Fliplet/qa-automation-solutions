@@ -193,5 +193,272 @@
     },
     "timestamp": 1759838329403,
     "requestId": "rsw74jdgdw8"
+  },
+  "5f5a5dd12871a5b98d859a3c26af33be2432410663492268cdb594a33b150c13": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-188",
+          "description": "The 'Forgot your password?' link, which users can click to initiate the password recovery process.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759865860766,
+    "requestId": "9ym91b38x8k"
+  },
+  "b09046b4a5474a564be5444c7d4fd037ee4960fe09d00c13492629996f6f358f": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-188",
+          "description": "The 'Forgot your password?' link, which allows users to initiate the password recovery process.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759865980634,
+    "requestId": "4fv588wzb5g"
+  },
+  "eab3e8554358d2aeff0e1e1d06bdda8d8cc98df7e17a390c2b59790cf46f7a86": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-188",
+          "description": "The 'Forgot your password?' link, which users can click to initiate the password recovery process.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759866094673,
+    "requestId": "2g36rgwhn66"
+  },
+  "c37c13068bbbdc9f281da0212fa4ea6d39cd027c9faa18b66d6dde7a5a976013": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-7",
+          "description": "Textbox for entering the email address",
+          "method": "fill",
+          "arguments": [
+            "inna.b@qamadness.com"
+          ]
+        }
+      ]
+    },
+    "timestamp": 1759866101025,
+    "requestId": "5anqcvqyera"
+  },
+  "c433728cc3e1b4fc33acc16ca4e8f1fa02f2c8b9dd4ce075683e0dff94e059ea": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-27",
+          "description": "The 'Verify email' button, which is likely used to confirm the user's email address as part of a login or password reset process.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759866103623,
+    "requestId": "8bz70nt78ke"
+  },
+  "01e09d7a6b595165d3bd5936eea5a16d9b42acce3fe330fc8f4efc604c090757": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-9",
+          "description": "Textbox for entering the verification code",
+          "method": "fill",
+          "arguments": [
+            "414507"
+          ]
+        }
+      ]
+    },
+    "timestamp": 1759866110628,
+    "requestId": "p20gnqj7asg"
+  },
+  "74caca473fd3ccd014c8be3cdf43f1af04f3ca80af65336fabdcc9b670b6e054": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-28",
+          "description": "The 'Verify' button used to confirm the verification code entered by the user.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759866112797,
+    "requestId": "461g73oq7iv"
+  },
+  "6718fbf2b12b9439592b2da76ff495e9652e0d9d7fb843808cff79e605a3e3e2": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-9",
+          "description": "The textbox for entering the verification code, which is the closest match to a password field in the given tree.",
+          "method": "fill",
+          "arguments": [
+            "QaTest@2024!"
+          ]
+        }
+      ]
+    },
+    "timestamp": 1759866119368,
+    "requestId": "tnwe2c9mev"
+  },
+  "29234fa218369e0ca141aaa1df4fd986c74757f289d7d7ed045ce0135a1dd2ac": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-9",
+          "description": "Textbox for entering the verification code",
+          "method": "fill",
+          "arguments": [
+            "QaTest@2024!"
+          ]
+        }
+      ]
+    },
+    "timestamp": 1759866122502,
+    "requestId": "j9w79j9btze"
+  },
+  "39df324c8ecdb9b23953f82d1d58b0cddcad03aadabf57383070824ff8af9e37": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-27",
+          "description": "The 'Verify email' button, which is likely used to reset the password after verifying the email address.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759866125057,
+    "requestId": "vd3j6ezr5wl"
+  },
+  "73e3b189083ef19dc2f0f4b596ee3e96ef5c6c6c2b2389db2b996203405a966f": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-27",
+          "description": "The 'Verify email' button, which is likely used to log in or verify the user's email address.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759866136136,
+    "requestId": "mzep0pdszv"
+  },
+  "3d65215903c688533a0d9910313cc4930c6b9f02896699faf4a0332272329740": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-7",
+          "description": "Textbox for entering the email address",
+          "method": "fill",
+          "arguments": [
+            "inna.b@qamadness.com"
+          ]
+        }
+      ]
+    },
+    "timestamp": 1759866144779,
+    "requestId": "ffud5c1lrfm"
+  },
+  "3fdbedcdc9da4347043577e9ac377316f18d6b0a72daa5ce4c7a6ac2993447d9": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-9",
+          "description": "Textbox for entering the verification code",
+          "method": "fill",
+          "arguments": [
+            "QaTest@2024!"
+          ]
+        }
+      ]
+    },
+    "timestamp": 1759866147232,
+    "requestId": "ql0gfp7ev3p"
+  },
+  "ec38495a43c6ba75c4291b390b25e96c6cdcef99d0440707b9ae74f4795cef86": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-27",
+          "description": "The 'Verify email' button within the form for email verification.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759866149267,
+    "requestId": "5j40uv05fjn"
+  },
+  "760c4996787bdef1af9fbffacf3eaf9cf68fac03f2068c000a69360406d324ce": {
+    "data": {
+      "extraction": "Login"
+    },
+    "timestamp": 1759866159533,
+    "requestId": "rktstlb4ss9"
+  },
+  "67b7a2abf77323595389bcfbab8b3c15f65466951878609d5fdf785a48d50b46": {
+    "data": {
+      "progress": "The main heading 'Login' has been extracted from the page.",
+      "completed": true
+    },
+    "timestamp": 1759866160605,
+    "requestId": "rktstlb4ss9"
+  },
+  "0029ca615266e7bd0a40e6623ad4f08232fdb2bd3a65b785b1145f7ed2236a95": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-188",
+          "description": "The 'Forgot your password?' link, which allows users to initiate the password recovery process.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759868516759,
+    "requestId": "swkwe4wmy0g"
+  },
+  "7932195fcd81d4aea7dcad2ba9ab3fd8f8d8bbbc6323ddd0861346d66046588a": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-6",
+          "description": "Textbox for entering the email address",
+          "method": "fill",
+          "arguments": [
+            "5049d519-f7c3-4819-a4e4-c2cda369eae5@mailslurp.biz"
+          ]
+        }
+      ]
+    },
+    "timestamp": 1759868523776,
+    "requestId": "j79mhjhopa8"
+  },
+  "029bb591958630d844659d826d9d0ab260cddc26951d2389c4632b72026df2cb": {
+    "data": {
+      "elements": [
+        {
+          "elementId": "0-26",
+          "description": "The 'Verify email' button in the form section of the page, used to verify the user's email address.",
+          "method": "click",
+          "arguments": []
+        }
+      ]
+    },
+    "timestamp": 1759868527133,
+    "requestId": "dbxjr8066a"
   }
 }

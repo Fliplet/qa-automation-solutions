@@ -1,4 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { Stagehand } from '@browserbasehq/stagehand';
+
+// Initialize Stagehand
+const stagehand = new Stagehand(getStagehandConfig());
+await stagehand.init();
+const page = stagehand.page;
 
 test.describe('Password Reset', () => {
   test('User can initiate password reset from login page', async ({ page }) => {

@@ -43,10 +43,11 @@
   "license": "ISC",
   "dependencies": {
     "@browserbasehq/stagehand": "^2.5.0",
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.6.1",
+    "mailslurp-client": "^16.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.1",
+    "@playwright/test": "^1.56.0",
     "@types/node": "^24.0.3",
     "typescript": "^5.8.3"
   }
