@@ -1,40 +1,41 @@
 import { test, expect } from '@playwright/test';
-import { Stagehand } from "@browserbasehq/stagehand";
+import { createBrowser } from '../../helpers/ai/browser';
+import { createAgent } from '../../helpers/ai/agent';
 
-test('Computer Use Agent - Onboarding and Login', async () => {
-  const stagehand = new Stagehand({
-    env: "LOCAL",
-    localBrowserLaunchOptions: {
-      headless: false,
-      viewport: {
-        width: 1920,
-        height: 1080,
-      },
+test.describe('AI Agent Tests with Helpers', () => {
+  let stagehand: any;
+  let agent: any;
+
+  test.beforeEach(async () => {
+    // Use browser helper
+    stagehand = await createBrowser();
+    
+    await stagehand.page.goto(process.env.BASE_URL || 'https://apps.fliplet.com/fliplet-aqa-events-aqa-aibe-2-eat');
+    // Use agent helper
+    agent = createAgent(stagehand);
+  });
+
+  test.afterEach(async () => {
+    if (stagehand) {
+      await stagehand.close();
     }
   });
 
-  await stagehand.init();
-
-  try {
-    await stagehand.page.goto(process.env.BASE_URL || 'https://apps.fliplet.com/fliplet-aqa-events-aqa-aibe-2-eat');
-
-    const agent = stagehand.agent({
-      provider: "openai",
-      model: "computer-use-preview",
-      instructions: `You are a helpful assistant that can use a web browser.
-      Do not ask follow up questions, the user will trust your judgement.`,
-      options: {
-        apiKey: process.env.OPENAI_API_KEY,
-      },
-    });
-
+  test('should complete onboarding and login process', async () => {
+    
     const task = "Pass the onboarding process and try to login to the app using the credentials provided: " + 
                  process.env.ADMIN_EMAIL + " " + process.env.ADMIN_PASSWORD;
     
     await agent.execute(task);
-    await expect(stagehand.page).toHaveURL(/.*dashboard|.*home|.*main|.*app/);
+    await expect(stagehand.page).toHaveURL(/.*dashboard|.*home|.*main/);
+
+  });
+
+  test('should handle login with invalid credentials', async () => {
+
+    const task = "Pass the onboarding process and try to login with invalid credentials: invalid@email.com wrongpassword";
     
-  } finally {
-    await stagehand.close();
-  }
+    await agent.execute(task);
+    await expect(stagehand.page.locator('text=Invalid|text=Error|text=Login')).toBeVisible();
+  });
 });
