@@ -1,4 +1,8 @@
 import { Stagehand } from "@browserbasehq/stagehand";
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 const stagehand = new Stagehand({
   env: "LOCAL",
@@ -11,26 +15,23 @@ const stagehand = new Stagehand({
   }
 });
 
-await stagehand.init();
+try {
+  await stagehand.init();
 
-// Navigate to a website
-await stagehand.page.goto(process.env.BASE_URL);
+  // Navigate to a website
+  await stagehand.page.goto(process.env.BASE_URL);
 
-const agent = stagehand.agent({
-	// You can use either OpenAI or Anthropic
-	provider: "OpenAI",
-	// The model to use (computer-use-preview for OpenAI)
-	model: "computer-use-preview-2025-03-11",
+  console.log("Starting onboarding and login process...");
 
-	// Customize the system prompt
-	instructions: `You are a helpful assistant that can use a web browser.
-	Do not ask follow up questions, the user will trust your judgement.`,
+  // Complete onboarding using regular Stagehand methods
+  await stagehand.page.act("Complete the onboarding process by clicking through all slides and clicking 'Let's get started!'");
 
-	// Customize the API key
-	options: {
-		apiKey: process.env.OPENAI_API_KEY,
-	},
-});
+  // Login using regular Stagehand methods
+  await stagehand.page.act(`Login with email: ${process.env.ADMIN_EMAIL} and password: ${process.env.ADMIN_PASSWORD}`);
 
-// Execute the agent
-await agent.execute("Pass the onboarding process and try to login to the app using the credentials provided: " + process.env.ADMIN_EMAIL + " " + process.env.ADMIN_PASSWORD);
+  console.log("Process completed!");
+} catch (error) {
+  console.error("Error:", error.message);
+} finally {
+  await stagehand.close();
+}
