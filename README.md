@@ -1,6 +1,6 @@
-# 🤖 Stagehand AI Testing Framework Integration
+# 🤖 Pure Stagehand AI Testing Framework
 
-This project integrates [Stagehand](https://github.com/browserbase/stagehand) AI-powered browser automation with our existing Playwright test framework, providing both traditional and AI-driven testing capabilities.
+This project is a pure [Stagehand](https://github.com/browserbase/stagehand) implementation for AI-powered browser automation testing, built from the ground up using Stagehand's natural language capabilities.
 
 ## 🎯 Overview
 
@@ -10,7 +10,7 @@ Stagehand is an SDK for automating browsers using natural language instructions.
 
 - **Natural Language Testing**: Write tests using plain English instructions
 - **AI-Powered Interactions**: Automatically find and interact with UI elements
-- **Hybrid Approach**: Combine traditional Playwright with AI automation
+- **Pure Stagehand Implementation**: Built entirely with Stagehand's AI capabilities
 - **Cross-Platform**: Works with any web application
 - **Maintenance-Friendly**: Tests adapt to UI changes automatically
 
@@ -19,8 +19,8 @@ Stagehand is an SDK for automating browsers using natural language instructions.
 ### Prerequisites
 
 - Node.js 18+ 
-- OpenAI API key (for computer-use model)
-- Existing Playwright test framework
+- OpenAI API key (for AI-powered automation)
+- Web application to test
 
 ### Installation
 
@@ -126,23 +126,341 @@ test('hybrid test approach', async ({ page }) => {
 });
 ```
 
-## 🎭 AI Agent Capabilities
+## 🤖 Computer Use Agent
+
+The **Computer Use Agent** is Stagehand's most advanced AI capability - it can perform complex, multi-step tasks autonomously using visual understanding and natural language instructions.
+
+### What is Computer Use Agent?
+
+Computer Use Agent is an AI-powered browser automation system that:
+- **Sees the screen** like a human would
+- **Understands context** and can adapt to UI changes
+- **Performs multi-step tasks** autonomously
+- **Makes decisions** based on what it sees
+- **Handles complex workflows** without manual intervention
+
+### Computer Use Agent vs Regular Stagehand
+
+| Feature | Regular Stagehand | Computer Use Agent |
+|---------|------------------|-------------------|
+| **Task Complexity** | Single actions | Multi-step workflows |
+| **Visual Understanding** | Text-based selectors | Screenshot analysis |
+| **Adaptability** | Fixed instructions | Context-aware decisions |
+| **Autonomy** | Manual step-by-step | Autonomous execution |
+| **Use Case** | Simple interactions | Complex business flows |
+
+### Setting Up Computer Use Agent
+
+#### 1. Environment Variables
+
+Add these to your `.env` file:
+
+```bash
+# OpenAI Computer Use Agent
+OPENAI_API_KEY=your_openai_api_key_here
+AGENT_OPENAI_MODEL=computer-use-preview-2025-03-11
+
+# Google Gemini Computer Use Agent (Alternative)
+GEMINI_API_KEY=your_gemini_api_key_here
+AGENT_GEMINI_MODEL=gemini-2.5-computer-use-preview-10-2025
+```
+
+#### 2. Browser Configuration
+
+```typescript
+// helpers/ai/browser.ts
+export async function createBrowser() {
+  const stagehand = new Stagehand({
+    env: "LOCAL",
+    useAPI: false,
+    verbose: 1, // Shows agent reasoning
+    localBrowserLaunchOptions: {
+      headless: false // Computer Use Agent needs visual access
+    }
+  });
+  
+  await stagehand.init();
+  return stagehand;
+}
+```
+
+#### 3. Agent Configuration
+
+```typescript
+// helpers/ai/agent.ts
+export function createAgent(stagehand: any) {
+  return stagehand.agent({
+    provider: "google", // or "openai"
+    model: "gemini-2.5-computer-use-preview-10-2025",
+    instructions: `You are a helpful assistant that can use a web browser.
+    You are currently on the following page: ${stagehand.page.url()}.
+    Do not ask follow up questions, the user will trust your judgement.`,
+    options: {
+      apiKey: process.env.GEMINI_API_KEY
+    }
+  });
+}
+```
+
+### Computer Use Agent Examples
+
+#### 1. Complete Onboarding and Login Flow
+
+```typescript
+test('should complete onboarding and login process', async () => {
+  const onboardingSteps = [
+    'Click "Explore More" button',
+    'Click "Continue" button',  
+    'Click "Continue" button',
+    'Click "Let\'s get started!" button',
+    'Verify you are redirected to the Login page'
+  ];
+  
+  const loginSteps = [
+    `Enter email: ${process.env.ADMIN_EMAIL}`,
+    `Enter password: ${process.env.ADMIN_PASSWORD}`,
+    'Click login button',
+    'Verify you are redirected to the Dashboard/Home page'
+  ];
+  
+  const task = `
+ONBOARDING STEPS:
+${onboardingSteps.map((step, index) => `${index + 1}. ${step}`).join('\n')}
+
+LOGIN STEPS:
+${loginSteps.map((step, index) => `${index + onboardingSteps.length + 1}. ${step}`).join('\n')}
+
+CRITICAL: NEVER use keyboard keys like ArrowRight, ArrowLeft, Tab, Enter. 
+ONLY use mouse clicks and typing text. Do not press any keyboard navigation keys.`;
+  
+  const result = await agent.execute({
+    instruction: task,
+    maxSteps: 30,
+    autoScreenshot: true
+  });
+  
+  // Verify success
+  expect(result.success).toBe(true);
+  expect(result.completed).toBe(true);
+});
+```
+
+#### 2. Complex E-commerce Workflow
+
+```typescript
+test('should complete full purchase flow', async () => {
+  const task = `
+1. Search for "wireless headphones" in the search bar
+2. Click on the first product result
+3. Select "Black" color option
+4. Click "Add to Cart" button
+5. Click "Proceed to Checkout" button
+6. Enter shipping address:
+   - Name: John Doe
+   - Address: 123 Main St
+   - City: New York
+   - ZIP: 10001
+7. Select "Standard Shipping" option
+8. Enter payment information:
+   - Card: 4111 1111 1111 1111
+   - Expiry: 12/25
+   - CVV: 123
+9. Click "Place Order" button
+10. Verify order confirmation page appears
+
+IMPORTANT: Handle any popups, modals, or unexpected dialogs that appear during the process.`;
+  
+  const result = await agent.execute({
+    instruction: task,
+    maxSteps: 50,
+    autoScreenshot: true
+  });
+  
+  expect(result.success).toBe(true);
+});
+```
+
+#### 3. Form Validation Testing
+
+```typescript
+test('should handle form validation errors', async () => {
+  const task = `
+1. Navigate to the registration form
+2. Leave all fields empty
+3. Click "Submit" button
+4. Verify validation error messages appear for:
+   - Email field (required)
+   - Password field (required)
+   - Confirm password field (required)
+5. Enter invalid email format: "invalid-email"
+6. Click "Submit" button
+7. Verify email format error message appears
+8. Enter valid email: "test@example.com"
+9. Enter password: "123"
+10. Click "Submit" button
+11. Verify password length error message appears`;
+  
+  const result = await agent.execute({
+    instruction: task,
+    maxSteps: 25,
+    autoScreenshot: true
+  });
+  
+  expect(result.success).toBe(true);
+});
+```
+
+### Computer Use Agent Best Practices
+
+#### 1. Task Instructions
+
+**✅ Good Instructions:**
+```typescript
+const task = `
+1. Click the "Sign In" button in the top-right corner
+2. Enter email: admin@example.com
+3. Enter password: secretpassword
+4. Click the blue "Login" button
+5. Verify you see "Welcome, Admin!" message
+6. Navigate to the "Settings" page using the sidebar menu`;
+```
+
+**❌ Poor Instructions:**
+```typescript
+const task = "Login and go to settings"; // Too vague
+```
+
+#### 2. Error Handling
+
+```typescript
+test('should handle login with invalid credentials', async () => {
+  const task = `
+1. Enter email: invalid@email.com
+2. Enter password: wrongpassword
+3. Click login button
+4. Verify error message appears: "Invalid credentials"
+5. Verify you remain on the login page (not redirected)`;
+  
+  try {
+    const result = await agent.execute({
+      instruction: task,
+      maxSteps: 15,
+      autoScreenshot: true
+    });
+    
+    // Check if agent detected the error
+    if (!result.success) {
+      console.log('Agent correctly detected failure:', result.message);
+    }
+  } catch (error) {
+    console.error('Agent execution failed:', error);
+    throw error;
+  }
+});
+```
+
+#### 3. Dynamic Task Building
+
+```typescript
+function buildLoginTask(credentials: { email: string; password: string }) {
+  return `
+1. Enter email: ${credentials.email}
+2. Enter password: ${credentials.password}
+3. Click login button
+4. Verify successful login by checking for dashboard elements`;
+}
+
+// Usage
+const adminTask = buildLoginTask({ 
+  email: process.env.ADMIN_EMAIL, 
+  password: process.env.ADMIN_PASSWORD 
+});
+await agent.execute({ instruction: adminTask, maxSteps: 10 });
+```
+
+#### 4. Verification Steps
+
+Always include verification steps in your tasks:
+
+```typescript
+const task = `
+1. Complete the registration form
+2. Submit the form
+3. VERIFY: Check that success message appears
+4. VERIFY: Check that you're redirected to dashboard
+5. VERIFY: Check that user menu shows your name`;
+```
+
+### Computer Use Agent Configuration Options
+
+```typescript
+const result = await agent.execute({
+  instruction: task,
+  maxSteps: 30,        // Maximum number of steps
+  autoScreenshot: true, // Take screenshots during execution
+  timeout: 120000      // Timeout in milliseconds
+});
+```
+
+### Troubleshooting Computer Use Agent
+
+#### Common Issues
+
+**1. Agent Not Clicking Elements**
+- Ensure `headless: false` in browser config
+- Check that viewport is set correctly (1024x768 recommended)
+- Verify task instructions are specific enough
+
+**2. Agent Using Wrong Keyboard Keys**
+- Add explicit instructions: "NEVER use keyboard navigation keys"
+- Specify: "ONLY use mouse clicks and typing text"
+
+**3. Agent Getting Stuck**
+- Increase `maxSteps` parameter
+- Break complex tasks into smaller chunks
+- Add more specific instructions
+
+**4. Agent Not Completing Tasks**
+- Check `result.success` and `result.completed` flags
+- Review agent logs with `verbose: 1`
+- Verify task instructions are achievable
+
+### Performance Considerations
+
+- **Computer Use Agent is slower** than regular Stagehand methods
+- **Use for complex workflows** where the flexibility is worth the overhead
+- **Combine with regular Stagehand** for hybrid approaches
+- **Set appropriate timeouts** (120+ seconds for complex tasks)
+
+### API Model Requirements
+
+**OpenAI Computer Use:**
+- Requires `computer-use-preview-2025-03-11` model
+- Needs API key with Computer Use permissions
+- More expensive than regular GPT models
+
+**Google Gemini Computer Use:**
+- Requires `gemini-2.5-computer-use-preview-10-2025` model
+- Generally faster and more cost-effective
+- Good alternative to OpenAI
+
+## 🎭 Regular Stagehand Methods
 
 ### Natural Language Actions
 
 ```typescript
 // Complex interactions
-await agent.execute("Fill out the registration form with valid user data");
-await agent.execute("Navigate to settings and update profile picture");
-await agent.execute("Complete the checkout process with test payment info");
+await stagehand.page.act("Fill out the registration form with valid user data");
+await stagehand.page.act("Navigate to settings and update profile picture");
+await stagehand.page.act("Complete the checkout process with test payment info");
 
 // Error handling
-await agent.execute("Try to login with invalid credentials and verify error message");
+await stagehand.page.act("Try to login with invalid credentials and verify error message");
 ```
 
 ### AI Methods
 
-- **`agent.execute(instruction)`** - Perform actions using natural language
+- **`agent.execute(instruction)`** - Computer Use Agent for complex workflows
 - **`stagehand.page.act(instruction)`** - Direct page actions
 - **`stagehand.page.observe(instruction)`** - Identify elements on page
 - **`stagehand.page.extract(instruction)`** - Extract data from page
@@ -165,6 +483,19 @@ my-stagehand-app/
 ```
 
 ## 🚀 Running Tests
+
+### Computer Use Agent Tests
+
+```bash
+# Run Computer Use Agent tests
+npx playwright test tests/ai-agent/onboarding-login.spec.ts
+
+# Run with UI mode (recommended for Computer Use Agent)
+npx playwright test tests/ai-agent/onboarding-login.spec.ts --headed
+
+# Run with verbose logging to see agent reasoning
+npx playwright test tests/ai-agent/onboarding-login.spec.ts --reporter=list
+```
 
 ### AI Agent Tests
 

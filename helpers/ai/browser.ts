@@ -1,25 +1,19 @@
 import { Stagehand } from "@browserbasehq/stagehand";
+import { config } from 'dotenv';
+import { resolve } from 'path';
 
-export interface BrowserConfig {
-  headless?: boolean;
-  viewport?: {
-    width: number;
-    height: number;
-  };
-}
+// Load environment variables
+config({ path: resolve(process.cwd(), '.env') });
 
-export async function createBrowser(config: BrowserConfig = {}) {
-  const {
-    headless = false,
-    viewport = { width: 1920, height: 1080 }
-  } = config;
-
+export async function createBrowser() {
   const stagehand = new Stagehand({
     env: "LOCAL",
+    useAPI: false,
+    verbose: 1,
     localBrowserLaunchOptions: {
-      headless,
-      viewport,
-    }
+      headless: false
+    },
+    // Uses Stagehand's default viewport (1024×768) - optimal for Computer Use Agent
   });
   
   await stagehand.init();

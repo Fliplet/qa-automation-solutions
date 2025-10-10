@@ -1,5 +1,5 @@
 export interface AgentConfig {
-  provider?: "openai" | "anthropic";
+  provider?: "openai" | "anthropic" | "google";
   model?: string;
   instructions?: string;
   apiKey?: string;
@@ -7,10 +7,12 @@ export interface AgentConfig {
 
 export function createAgent(stagehand: any, config: AgentConfig = {}) {
   const {
-    provider = "openai",
-    model = "computer-use-preview",
-    instructions = "You are a helpful assistant that can use a web browser. Do not ask follow up questions, the user will trust your judgement.",
-    apiKey = process.env.OPENAI_API_KEY
+    provider = "google",
+    model = process.env.AGENT_GEMINI_MODEL || "gemini-2.5-computer-use-preview-10-2025",
+    instructions = `You are a helpful assistant that can use a web browser.
+    You are currently on the following page: ${stagehand.page.url()}.
+    Do not ask follow up questions, the user will trust your judgement.`,
+    apiKey = process.env.GEMINI_API_KEY
   } = config;
 
   return stagehand.agent({
