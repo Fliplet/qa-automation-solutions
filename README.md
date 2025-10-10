@@ -1,25 +1,26 @@
-# 🤖 Pure Stagehand AI Testing Framework
+# 🤖 Stagehand Computer Use Agent Framework
 
-This project is a pure [Stagehand](https://github.com/browserbase/stagehand) implementation for AI-powered browser automation testing, built from the ground up using Stagehand's natural language capabilities.
+This project is a **Computer Use Agent-focused** testing framework built on [Stagehand](https://github.com/browserbase/stagehand). The **Computer Use Agent** is the main feature - an AI-powered browser automation system that can perform complex, multi-step tasks autonomously using visual understanding.
 
 ## 🎯 Overview
 
-Stagehand is an SDK for automating browsers using natural language instructions. Built on top of [Playwright](https://playwright.dev/), it provides AI-powered automation that can understand and interact with web pages using human-like instructions.
+**Computer Use Agent** is Stagehand's most advanced capability - it sees the screen like a human, understands context, and performs complex workflows autonomously. This framework is designed around leveraging this powerful AI agent for sophisticated browser automation testing.
 
 ### Key Features
 
-- **Natural Language Testing**: Write tests using plain English instructions
-- **AI-Powered Interactions**: Automatically find and interact with UI elements
-- **Pure Stagehand Implementation**: Built entirely with Stagehand's AI capabilities
-- **Cross-Platform**: Works with any web application
-- **Maintenance-Friendly**: Tests adapt to UI changes automatically
+- **🤖 Computer Use Agent**: Main feature - autonomous multi-step task execution
+- **👁️ Visual Understanding**: Sees and understands web pages like a human
+- **🧠 Context-Aware**: Adapts to UI changes and makes intelligent decisions
+- **🔄 Autonomous Workflows**: Completes complex business processes without manual intervention
+- **📝 Natural Language**: Write tests using plain English instructions
+- **⚡ Rapid Development**: Create sophisticated tests quickly without complex selectors
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - Node.js 18+ 
-- OpenAI API key (for AI-powered automation)
+- **Computer Use Agent API key** (OpenAI or Google Gemini)
 - Web application to test
 
 ### Installation
@@ -34,11 +35,16 @@ cp .env.example .env
 
 ### Environment Setup
 
-Add your API keys to `.env`:
+Add your **Computer Use Agent** API keys to `.env`:
 
 ```bash
-# Required for AI operations
+# Computer Use Agent - OpenAI (Recommended)
 OPENAI_API_KEY=your_openai_api_key_here
+AGENT_OPENAI_MODEL=computer-use-preview-2025-03-11
+
+# Computer Use Agent - Google Gemini (Alternative)
+GEMINI_API_KEY=your_gemini_api_key_here
+AGENT_GEMINI_MODEL=gemini-2.5-computer-use-preview-10-2025
 
 # Application URLs
 BASE_URL=https://your-app-url.com
@@ -46,66 +52,83 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=your_admin_password
 ```
 
+### Your First Computer Use Agent Test
+
+```bash
+# Run the onboarding and login test
+npx playwright test tests/ai-agent/onboarding-login.spec.ts --headed
+```
+
+This will demonstrate the **Computer Use Agent** completing a complex multi-step workflow autonomously!
+
 ## 🧪 Test Structure
 
-### AI Agent Tests
+### Computer Use Agent Tests (Main Focus)
 
 Located in `tests/ai-agent/`:
 
-- **`helpers-test.spec.ts`** - Tests using helper functions (recommended)
+- **`onboarding-login.spec.ts`** - Complete onboarding and login workflow (main example)
+- **`helpers-test.spec.ts`** - Tests using helper functions
 - **`computer-use-agent.spec.ts`** - Direct Stagehand implementation
-- **`onboarding-login.spec.ts`** - Isolated test approach
 
-### Helper Functions
+### Helper Functions (Computer Use Agent Support)
 
 Located in `helpers/ai/`:
 
-- **`browser.ts`** - Browser initialization helper
-- **`agent.ts`** - AI agent creation helper
+- **`browser.ts`** - Browser initialization for Computer Use Agent
+- **`agent.ts`** - Computer Use Agent creation and configuration
 
 ## 🔧 Usage Examples
 
-### Basic AI Agent Test
+### Basic Computer Use Agent Test
 
 ```typescript
 import { test, expect } from '@playwright/test';
 import { createBrowser } from '../../helpers/ai/browser';
 import { createAgent } from '../../helpers/ai/agent';
 
-test('AI-powered login test', async () => {
-  // Initialize browser
+test('Computer Use Agent login test', async () => {
+  // Initialize browser for Computer Use Agent
   const stagehand = await createBrowser();
   
   // Navigate to page
   await stagehand.page.goto(process.env.BASE_URL);
   
-  // Create AI agent
+  // Create Computer Use Agent
   const agent = createAgent(stagehand);
   
-  // Execute natural language task
+  // Execute complex workflow autonomously
   await agent.execute("Login with admin credentials and navigate to dashboard");
   
   // Verify result
-  await expect(stagehand.page).toHaveURL(/.*dashboard/);
+  const currentUrl = stagehand.page.url();
+  expect(currentUrl).toMatch(/.*dashboard/);
   
   // Cleanup
   await stagehand.close();
 });
 ```
 
-### Using Helpers (Recommended)
+### Using Computer Use Agent Helpers (Recommended)
 
 ```typescript
 test.beforeEach(async () => {
-  stagehand = await createBrowser();                    // 1. Create browser
+  stagehand = await createBrowser();                    // 1. Create browser for Computer Use Agent
   await stagehand.page.goto(process.env.BASE_URL);     // 2. Navigate to page
-  agent = createAgent(stagehand);                       // 3. Create agent
+  agent = createAgent(stagehand);                       // 3. Create Computer Use Agent
 });
 
-test('should complete onboarding and login', async () => {
+test('should complete complex onboarding and login workflow', async () => {
   const task = "Pass the onboarding process and login with admin credentials";
-  await agent.execute(task);
-  await expect(stagehand.page).toHaveURL(/.*dashboard|.*home|.*main/);
+  const result = await agent.execute({
+    instruction: task,
+    maxSteps: 30,
+    autoScreenshot: true
+  });
+  
+  // Verify Computer Use Agent completed successfully
+  expect(result.success).toBe(true);
+  expect(result.completed).toBe(true);
 });
 ```
 
